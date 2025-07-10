@@ -1,5 +1,5 @@
-import Card from "./components/Card";
-import StatusLabel from "./components/StatusLabel";
+import Card from "../components/Card";
+import StatusLabel from "../components/StatusLabel";
 
 export default function Home() {
 

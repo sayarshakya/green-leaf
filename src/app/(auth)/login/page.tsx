@@ -36,7 +36,7 @@ export default function LoginForm() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push('/'); // redirect to home
+      router.push('/dashboard');
     } catch (error: any) {
       setAuthError('Invalid email or password');
     }
