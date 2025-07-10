@@ -15,16 +15,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="flex flex-col min-h-screen">
-          <ProtectedRoute>
-             <Header />
-            <main className="flex-1 pt-16 pb-16 p-6 bg-white">
-              {children}
-            </main>
-            <Footer />
-          </ProtectedRoute>
-      </body>
-    </html>
+    <>
+      <ProtectedRoute>
+         <div className="h-screen flex flex-col">
+          <Header />
+          <div className="flex-1 overflow-y-auto pt-16 pb-16 bg-white">
+            {children}
+          </div>
+          <Footer />
+        </div>
+        </ProtectedRoute>
+    </>
   );
 }

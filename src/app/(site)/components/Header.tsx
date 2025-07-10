@@ -6,42 +6,45 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
 const links = [
-  { name: 'Dashboard', href: '/' },
+  { name: 'Dashboard', href: '/dashboard' },
+  { name: 'Loan', href: '/loan' },
   { name: 'Profile', href: '/profile' },
-  { name: 'History', href: '/history' },
 ];
 
 export default function Header() {
-    const pathname = usePathname();
-    const router = useRouter();
+  const pathname = usePathname();
+  const router = useRouter();
 
-    const handleLogout = async () => {
+  const handleLogout = async () => {
     await signOut(auth);
-    router.push('/login'); // redirect to login after logout
+    router.push('/login');
   };
 
   return (
-    <header
-      className="fixed top-0 left-0 right-0 w-full h-16 bg-white shadow-md z-50 flex items-center justify-between px-6 transition-all duration-300"
-    >
-      <div className="p-10 text-xl font-semibold text-gray-800">Green Leaf</div>
-      <nav className="flex space-x-4 px-4 py-2">
+    <header className="fixed top-0 left-0 right-0 h-16 bg-white shadow-md z-50 flex items-center justify-between px-4 sm:px-6 md:px-8">
+      {/* Logo / Title */}
+      <div className="text-lg sm:text-xl font-semibold text-gray-800">Green Leaf</div>
+
+      {/* Navigation */}
+      <nav className="flex items-center gap-2 sm:gap-4 flex-wrap">
         {links.map((link) => (
           <Link
             key={link.href}
             href={link.href}
-            className={`flex items-center gap-2 px-4 py-2 rounded transition ${
+            className={`px-3 py-1 rounded border text-sm sm:text-base transition-colors duration-200 ${
               pathname === link.href
-                ? 'bg-green-700 text-white font-semibold'
-                : 'hover:bg-green-100 text-black'
+                ? 'border-green-700 text-green-700 font-semibold'
+                : 'border-transparent text-black hover:border-green-500 hover:text-green-700'
             }`}
           >
-            <span>{link.name}</span>
+            {link.name}
           </Link>
         ))}
-         <button
+
+        {/* Logout button */}
+        <button
           onClick={handleLogout}
-          className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 transition"
+          className="px-3 py-1 text-sm sm:text-base rounded bg-red-600 text-white hover:bg-red-700 transition"
         >
           Logout
         </button>

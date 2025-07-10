@@ -1,15 +1,15 @@
 'use client';
 
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
 interface CardProps {
   title: string;
   description?: string;
   children?: React.ReactNode;
   className?: string;
-  imageUrl?: string;
-  buttonText?: string;
-  onButtonClick?: () => void;
+  icon?: IconDefinition;
 }
 
 const Card: React.FC<CardProps> = ({
@@ -17,27 +17,17 @@ const Card: React.FC<CardProps> = ({
   description,
   children,
   className = '',
-  imageUrl,
-  buttonText,
-  onButtonClick,
+  icon,
 }) => {
   return (
-    <div className={`max-w-xs rounded-lg shadow-sm border border-gray-200 overflow-hidden text-sm ${className}`}>
-      {imageUrl && (
-        <img src={imageUrl} alt={title} className="w-full h-32 object-cover" />
-      )}
-      <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-800 mb-1">{title}</h3>
-        {description && <p className="text-black text-2xl mb-2 font-bold">{description}</p>}
+    <div className={`rounded-xl p-3 sm:p-4 shadow-md ${className}`}>
+      <div className="p-3 sm:p-4">
+       <div className="absolute top-4 right-4 text-black/40 text-6xl pointer-events-none">
+          {icon && <FontAwesomeIcon icon={icon} />}
+        </div>
+        <h3 className="text-base sm:text-lg text-black font-semibold mb-1">{title}</h3>
+        {description && <p className="text-xl sm:text-2xl text-black mb-2 font-bold">{description}</p>}
         {children}
-        {buttonText && (
-          <button
-            onClick={onButtonClick}
-            className="mt-3 bg-blue-600 text-white px-3 py-1.5 rounded text-xs hover:bg-blue-700 transition"
-          >
-            {buttonText}
-          </button>
-        )}
       </div>
     </div>
   );
