@@ -2,14 +2,6 @@ import Card from "../components/Card";
 import StatusLabel from "../components/StatusLabel";
 
 export default function Home() {
-
-const statusColors = {
-  Done: 'text-green-800 bg-green-100',
-  Pending: 'text-yellow-800 bg-yellow-100',
-  None: 'text-gray-800 bg-gray-200',
-  Failed: 'text-red-800 bg-red-100',
-};
-
  return (
     <div className="p-4">
       <div className="overflow-x-auto">

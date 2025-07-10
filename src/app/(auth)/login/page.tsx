@@ -4,12 +4,7 @@ import { auth } from '@/lib/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { z } from 'zod';
-
-const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-});
+import loginSchema from '@/app/(auth)/utils/zod';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
@@ -37,8 +32,12 @@ export default function LoginForm() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       router.push('/dashboard');
-    } catch (error: any) {
-      setAuthError('Invalid email or password');
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'message' in error) {
+        setAuthError((error as { message: string }).message);
+      } else {
+        setAuthError('Invalid email or password');
+      }
     }
   };
 
