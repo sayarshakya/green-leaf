@@ -8,6 +8,7 @@ import { useUser } from './UserContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCannabis, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
+import Loading from './Loading';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -30,7 +31,8 @@ export default function Header() {
   };
 
   const toggleMenu = () => setMobileMenuOpen(!mobileMenuOpen);
-
+  if( loading) return <Loading />;
+  
   return (
      <header className="fixed top-0 left-0 right-0 h-16 bg-white shadow-md z-50 flex items-center justify-between px-4 sm:px-6 md:px-8">
       {/* Logo / Title */}

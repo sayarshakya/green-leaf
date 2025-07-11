@@ -3,7 +3,7 @@ import { faPiggyBank, faHashtag, faReceipt, faCalendarDay } from '@fortawesome/f
 import Card from "../../components/Card";
 import { useEffect, useState } from "react";
 import { collection, doc, getDoc, onSnapshot, orderBy, query } from "firebase/firestore";
-import { auth, db } from "@/lib/firebase";
+import { db } from "@/lib/firebase";
 import { Detail, UserData } from "../../data/models";
 import { formatNumber } from "../../utils/formatNumber";
 import Loading from '@/app/components/Loading';
@@ -49,8 +49,6 @@ const cards = [
     });
     return () => unsub();
   }, []);
-
-  const dayOnly = new Date().getDate().toString().padStart(2, '0');
 
   if (loading) 
   return <Loading />;

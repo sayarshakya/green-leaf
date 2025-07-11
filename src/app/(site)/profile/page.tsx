@@ -4,17 +4,6 @@ import { useUser } from '@/app/components/UserContext';
 import { redirect } from 'next/navigation';
 import Loading from '@/app/components/Loading';
 
-type UserContextType = {
-  userData: {
-    name: string;
-    email: string;
-    role?: string;
-    loanCount?: number;
-    loanAmount?: number;
-  } | null;
-  loading: boolean;
-};
-
 export default function Profile() {
   const { userData, loading } = useUser();
 
