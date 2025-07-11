@@ -5,6 +5,8 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import loginSchema from '@/app/(auth)/utils/zod';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCannabis } from '@fortawesome/free-solid-svg-icons';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
@@ -42,19 +44,25 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Green Leaf</h1>
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Login</h2>
+   <div className="min-h-screen flex items-center justify-center bg-gray">
+    <div className="w-full max-w-md rounded-lg shadow-2xl p-8 bg-white">
+        <div className="text-center">
+          <FontAwesomeIcon
+            icon={faCannabis}
+            className="mx-auto text-green-600 text-7xl mb-4"
+          />
+          <h1 className="text-2xl font-bold text-gray-800 mb-3">Green Leaf</h1>
+          <h3 className="text-lg font-bold text-gray-800 mb-6">Sign in to your Account</h3>
+        </div>
         {authError && <p className="text-red-600 text-sm text-center">{authError}</p>}
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-black mb-1">
+            <label htmlFor="email" className="block text-sm font-bold text-black mb-1">
               Email
             </label>
             <input
               id="email"
-              className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring ${
+              className={`w-full text-black px-4 py-2 border rounded-md focus:outline-none focus:ring ${
                     errors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-green-400'
                 }`}
               value={email}
@@ -65,13 +73,13 @@ export default function LoginForm() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-black mb-1">
+            <label htmlFor="password" className="block text-sm font-bold text-black mb-1">
               Password
             </label>
             <input
               id="password"
               type="password"
-              className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring ${
+              className={`w-full text-black px-4 py-2 border rounded-md focus:outline-none focus:ring ${
                     errors.password ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-green-400'
                 }`}
               value={password}
@@ -92,5 +100,6 @@ export default function LoginForm() {
     </div>
   );
 }
+
 
 

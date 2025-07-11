@@ -7,6 +7,8 @@ export interface UserData {
   loanCount: number;
   loanAmount: number;
   role?: string;
+  fromDate: Timestamp;
+  toDate: Timestamp;
 }
 
 export interface Deposit {
@@ -17,14 +19,9 @@ export interface Deposit {
   updatedAt?: Timestamp;
 }
 
-export interface Loan {
-  id: string;
-  userId: string;
+export interface Detail {
+  availableAmount: string;
   loanAmount: string;
-  fromDate: Timestamp;
-  toDate: Timestamp;
-}
-
-export interface LoanWithUser extends Loan {
-  user: UserData;
+  loanCount: string;
+  updatedAt?: Timestamp;
 }

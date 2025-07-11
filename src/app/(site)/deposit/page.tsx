@@ -1,10 +1,10 @@
 import StatusLabel from "../../components/StatusLabel";
 
-export default function Loan() {
+export default function Deposit() {
   return (
     <div className="p-4">
       <div className="max-w-7xl mx-auto space-y-6">
-        <h1 className="text-2xl md:text-3xl font-bold text-black">Loan</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-black">Deposit</h1>
 
         {/* Responsive Table */}
         <div className="overflow-x-auto">
