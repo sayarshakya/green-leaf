@@ -27,7 +27,7 @@ export default function Header() {
 
   const handleLogout = async () => {
     await signOut(auth);
-    router.push('/login');
+    router.replace('/login');
   };
 
   const toggleMenu = () => setMobileMenuOpen(!mobileMenuOpen);
@@ -36,10 +36,12 @@ export default function Header() {
   return (
      <header className="fixed top-0 left-0 right-0 h-16 bg-white shadow-md z-50 flex items-center justify-between px-4 sm:px-6 md:px-8">
       {/* Logo / Title */}
-      <div className="flex items-center text-lg sm:text-xl font-semibold text-gray-800">
+     <Link href="/dashboard">
+      <div className="flex items-center text-lg sm:text-xl font-semibold text-gray-800 cursor-pointer">
         <FontAwesomeIcon icon={faCannabis} className="text-green-600 text-3xl mr-2" />
         Green Leaf
       </div>
+    </Link>
 
       {/* Desktop Navigation */}
       <nav className="hidden md:flex items-center gap-2 sm:gap-4 flex-wrap">

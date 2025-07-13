@@ -1,9 +1,9 @@
 'use client';
 
 import { auth } from '@/lib/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import loginSchema from '@/app/(auth)/utils/zod';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCannabis } from '@fortawesome/free-solid-svg-icons';
@@ -33,7 +33,7 @@ export default function LoginForm() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push('/dashboard');
+      router.replace('/dashboard');
     } catch (error: unknown) {
       if (error && typeof error === 'object' && 'message' in error) {
         setAuthError((error as { message: string }).message);
@@ -42,6 +42,17 @@ export default function LoginForm() {
       }
     }
   };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        router.replace('/dashboard'); 
+      }
+    });
+
+    return () => unsubscribe();
+  }, [router]);
+
 
   return (
    <div className="min-h-screen flex items-center justify-center bg-gray">

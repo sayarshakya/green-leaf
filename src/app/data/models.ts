@@ -13,10 +13,11 @@ export interface UserData {
 
 export interface Deposit {
   id: string;
-  userId: string;
   month: string;
+  userId: string;
   status: string;
   updatedAt?: Timestamp;
+
 }
 
 export interface Detail {

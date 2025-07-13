@@ -46,6 +46,7 @@ const cards = [
         ...doc.data(),
       })) as UserData[];
       setUsers(userList);
+      console.log('Users updated:', userList);
     });
     return () => unsub();
   }, []);
@@ -93,6 +94,7 @@ const cards = [
               <th className="px-4 py-3">From Date</th>
               <th className="px-4 py-3">To Date</th>
               <th className="px-4 py-3">Amount</th>
+              <th className="px-4 py-3">Count</th>
             </tr>
           </thead>
           <tbody>
@@ -114,6 +116,9 @@ const cards = [
                 </td>
                 <td className="px-4 py-3 border-t">
                   {formatNumber(row.loanAmount)} 
+                </td>
+                  <td className="px-4 py-3 border-t">
+                  {row.loanCount} 
                 </td>
               </tr>
             ))}
