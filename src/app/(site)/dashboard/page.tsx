@@ -7,6 +7,7 @@ import { db } from "@/lib/firebase";
 import { Detail, UserData } from "../../data/models";
 import { formatNumber } from "../../utils/formatNumber";
 import Loading from '@/app/components/Loading';
+import DateFormatter from '@/app/components/DateFormatter';
 
 
 export default function Home() {
@@ -46,7 +47,6 @@ const cards = [
         ...doc.data(),
       })) as UserData[];
       setUsers(userList);
-      console.log('Users updated:', userList);
     });
     return () => unsub();
   }, []);
@@ -90,7 +90,7 @@ const cards = [
         <table className="min-w-full text-center bg-white border border-gray-200 rounded-lg shadow text-sm md:text-base">
           <thead className="bg-gray-800 text-white">
             <tr>
-              <th className="px-4 py-3">Name</th>
+              <th className="px-4 py-3 text-left">Name</th>
               <th className="px-4 py-3">From Date</th>
               <th className="px-4 py-3">To Date</th>
               <th className="px-4 py-3">Amount</th>
@@ -105,13 +105,13 @@ const cards = [
                   index % 2 === 0 ? 'bg-white' : 'bg-gray-100'
                 } text-black`}
               >
-                <td className="px-4 py-3 border-t">{row.name}</td>
+                <td className="px-4 py-3 border-t text-left">{row.name}</td>
                 <td className="px-4 py-3 border-t">
-                  {row.fromDate.toDate().toISOString().split('T')[0].replace(/-/g, '/')}
+                  <DateFormatter value={row.fromDate} />
                 </td>
                 <td className="px-4 py-3 border-t font-semibold rounded">
                   <label className="inline-block border border-gray-300 rounded-full px-3 py-1 text-sm text-gray-800 bg-green-400">
-                    {row.toDate.toDate().toISOString().split('T')[0].replace(/-/g, '/')}
+                    <DateFormatter value={row.toDate} />
                   </label>
                 </td>
                 <td className="px-4 py-3 border-t">

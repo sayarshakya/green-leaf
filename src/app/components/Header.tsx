@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useUser } from './UserContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCannabis, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faCannabis, faBars, faTimes, faUser, faGauge, faMoneyBillTransfer, faUserTie, faPersonWalkingArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import Loading from './Loading';
 
@@ -19,10 +19,10 @@ export default function Header() {
   const role = userData?.role || 'USER';
 
   const links = [
-  { name: 'Dashboard', href: '/dashboard' },
-  { name: 'Deposit', href: '/deposit' },
-  { name: 'Profile', href: '/profile' },
-   ...(role === 'ADMIN' ? [{ name: 'Account', href: '/account' }] : []),
+  { name: 'Dashboard', href: '/dashboard', icon: faGauge },
+  { name: 'Deposit', href: '/deposit', icon: faMoneyBillTransfer },
+  { name: 'Profile', href: '/profile', icon: faUser },
+   ...(role === 'ADMIN' ? [{ name: 'Account', href: '/account', icon : faUserTie }] : []),
 ];
 
   const handleLogout = async () => {
@@ -51,18 +51,18 @@ export default function Header() {
             href={link.href}
             className={`px-3 py-1 rounded border text-sm sm:text-base transition-colors duration-200 ${
               pathname === link.href
-                ? 'border-green-700 text-green-700 font-semibold'
+                ? 'border-green-600 text-green-700 font-semibold'
                 : 'border-transparent text-black hover:border-green-500 hover:text-green-700'
             }`}
           >
-            {link.name}
+            <FontAwesomeIcon icon={link.icon} className="w-4" /> {link.name}
           </Link>
         ))}
         <button
           onClick={handleLogout}
           className="px-3 py-1 text-sm sm:text-base rounded bg-red-600 text-white hover:bg-red-700 transition"
         >
-          Logout
+          Logout <FontAwesomeIcon icon={faPersonWalkingArrowRight} className="w-4" />
         </button>
       </nav>
 
@@ -88,7 +88,7 @@ export default function Header() {
                   : 'hover:bg-gray-100 text-gray-800'
               }`}
             >
-              {link.name}
+            <FontAwesomeIcon icon={link.icon} className="w-4" /> {link.name}
             </Link>
           ))}
           <button
@@ -98,7 +98,7 @@ export default function Header() {
             }}
             className="w-full px-3 py-2 text-sm rounded bg-red-600 text-white hover:bg-red-700 transition"
           >
-            Logout
+            Logout <FontAwesomeIcon icon={faPersonWalkingArrowRight} className="w-4" />
           </button>
         </div>
       )}

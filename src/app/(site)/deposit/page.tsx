@@ -8,7 +8,8 @@ import type { Deposit } from '@/app/data/models';
 import StatusLabel from '@/app/components/StatusLabel';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSquareCaretLeft, faSquareCaretRight } from '@fortawesome/free-solid-svg-icons';
-//import { useUser } from '@/app/components/UserContext';
+import DateFormatter from '@/app/components/DateFormatter';
+import { useUser } from '@/app/components/UserContext';
 
 const MIN_DATE = new Date(2025, 5); // June 2025 (month is 0-indexed)
 const TODAY = new Date(); 
@@ -25,8 +26,8 @@ export default function Deposit() {
   const [currentMonth, setCurrentMonth] = useState(TODAY);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Row[]>([]);
-  //const { userData } = useUser(); // user.role could be 'admin' or 'user'
-
+  const { userData } = useUser(); // user.role could be 'admin' or 'user'
+ 
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -181,8 +182,7 @@ export default function Deposit() {
             </button>
           )} */}
         </div>
-        <div className="relative w-full overflow-x-auto">
-            <div className="flex items-center justify-between text-black mb-2">
+         <div className="flex items-center justify-between text-black mb-2">
               <button
                 className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400"
                 onClick={handlePrev}
@@ -190,7 +190,7 @@ export default function Deposit() {
               >
                 <FontAwesomeIcon icon={faSquareCaretLeft} className="w-4 h-4" />
               </button>
-              <span className="font-semibold text-center flex-1">
+              <span className="font-semibold text-lg text-center flex-1">
                 {format(currentMonth, 'MMMM yyyy')}
               </span>
               <button
@@ -200,12 +200,13 @@ export default function Deposit() {
               >
                 <FontAwesomeIcon icon={faSquareCaretRight} className="w-4 h-4" />
               </button>
-          </div>
+            </div>
+        <div className="relative w-full overflow-x-auto">
           <table className="w-full text-center bg-white border border-gray-200 rounded-lg shadow text-sm md:text-base">
             <thead className="bg-gray-800 text-white">
               <tr>
-                <th className="px-4 py-3">Name</th>
-                <th className="px-4 py-3">Deposit Status</th>
+                <th className="px-4 py-3 text-left">Name</th>
+                <th className="px-4 py-3">Deposit</th>
                  <th className="px-4 py-3">Updated At</th>
                 <th className="px-4 py-3">Action</th>
               </tr>
@@ -220,21 +221,12 @@ export default function Deposit() {
               ) : data.length > 0 ? (
                 data.map(({userId, name, status, updatedAt}, index) => (
                   <tr key={index} className="text-black border-t">
-                    <td className="px-4 py-2">{name}</td>
+                    <td className="px-4 py-2 text-left">{name}</td>
                     <td className="px-4 py-2 capitalize"> 
                      <StatusLabel status={status}/>
                     </td>
                     <td className="px-4 py-2">
-                      {updatedAt ? (
-                        format(
-                          updatedAt instanceof Timestamp
-                            ? updatedAt.toDate()
-                            : updatedAt, // already a Date
-                          'yyyy/MM/dd'
-                        )
-                      ) : (
-                        ''
-                      )}
+                        <DateFormatter value={updatedAt} />
                     </td>
                    <td className="px-4 py-2">
                     <label className="relative inline-block w-11 h-6">
@@ -242,13 +234,20 @@ export default function Deposit() {
                         type="checkbox"
                         className="sr-only peer"
                         checked={status === "Done"}
-                        disabled={status === 'Done'}
+                        disabled={
+                          status === "Done" ||
+                          (userId !== userData?.id && userData?.role === "USER" ) ||
+                          status !== "Pending"
+                        }
                         onChange={() => handleToggle(userId, status)}
                       />
                       <div
                         className={`
                           w-full h-full rounded-full transition duration-300
-                          ${status === "Done" ? "bg-gray-400" : "bg-green-500"}
+                          ${status === "Done" ||
+                            (userId !== userData?.id && userData?.role === "USER" ) ||
+                            status !== "Pending" 
+                            ? "bg-gray-400" : "bg-green-500"}
                         `}
                       ></div>
 
