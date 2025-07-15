@@ -16,18 +16,15 @@ export async function GET() {
     Team Green Leaf`;
 
   try {
-    //const snapshot = await db.collection('users').get();
-    //const toList: string[] = [];
-    const toList: string[] = [
-      "sayarshakya@gmail.com",
-    ];
+    const snapshot = await db.collection('users').get();
+    const toList: string[] = [];
 
-    // snapshot.forEach((doc) => {
-    //   const data = doc.data();
-    //   if (data.email) {
-    //     toList.push(data.email);
-    //   }
-    // });
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      if (data.email) {
+        toList.push(data.email);
+      }
+    });
 
     if (toList.length === 0) {
       return NextResponse.json({ message: 'No user emails found.' }, { status: 400 });
