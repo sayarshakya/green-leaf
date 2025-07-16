@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { doc, getDoc, Timestamp, updateDoc } from 'firebase/firestore';
 import { format, addMonths, subMonths, isBefore, isAfter, isSameMonth } from 'date-fns';
 import { db } from '@/lib/firebase';
@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSquareCaretLeft, faSquareCaretRight } from '@fortawesome/free-solid-svg-icons';
 import DateFormatter from '@/app/components/DateFormatter';
 import { useUser } from '@/app/components/UserContext';
+import { toast, ToastContainer } from 'react-toastify';
 
 const MIN_DATE = new Date(2025, 5); // June 2025 (month is 0-indexed)
 const TODAY = new Date(); 
@@ -28,54 +29,60 @@ export default function Deposit() {
   const [data, setData] = useState<Row[]>([]);
   const { userData } = useUser(); // user.role could be 'admin' or 'user'
  
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const monthId = format(currentMonth, "yyyy-MM");
-      const docRef = doc(db, "deposits", monthId);
-      const docSnap = await getDoc(docRef);
+  const fetchData = useCallback(async () => {
+  setLoading(true);
+  try {
+    const monthId = format(currentMonth, "yyyy-MM");
+    const docRef = doc(db, "deposits", monthId);
+    const docSnap = await getDoc(docRef);
 
-      if (!docSnap.exists()) {
-        setData([]);
-        setLoading(false);
-        return;
-      }
-
-      const docData = docSnap.data();
-      const rows: Row[] = [];
-
-      for (const [userId, value] of Object.entries(docData)) {
-        const [status, , rawTimestamp] = value as [string, string, Timestamp | Date];
-
-        const updatedAt = rawTimestamp instanceof Timestamp
-        ? rawTimestamp.toDate()
-        : rawTimestamp;
-      
-        const userDoc = await getDoc(doc(db, "users", userId));
-        const name = userDoc.exists() ? userDoc.data()?.name || "Unknown" : "Unknown";
-
-        rows.push({
-          userId,
-          name,
-          status,
-          month: monthId,
-          updatedAt,
-        });
-      }
-
-      rows.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
-      setData(rows);
-    } catch (error) {
-      console.error("Error fetching data:", error);
+    if (!docSnap.exists()) {
       setData([]);
-    } finally {
       setLoading(false);
+      return;
     }
-  };
+
+    const docData = docSnap.data();
+    const entries = Object.entries(docData) as [string, [string, string, Timestamp | Date]][];
+
+    // 🔁 Fetch all user documents in parallel
+    const userPromises = entries.map(async ([userId, value]) => {
+      const [status, , rawTimestamp] = value;
+
+      const updatedAt =
+        rawTimestamp instanceof Timestamp
+          ? rawTimestamp.toDate()
+          : rawTimestamp;
+
+      const userDoc = await getDoc(doc(db, "users", userId));
+      const name = userDoc.exists() ? userDoc.data()?.name || "Unknown" : "Unknown";
+
+      return {
+        userId,
+        name,
+        status,
+        month: monthId,
+        updatedAt,
+      } as Row;
+    });
+
+    const rows = await Promise.all(userPromises);
+
+    // ✅ Sort by most recently updated
+    rows.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+
+    setData(rows);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    setData([]);
+  } finally {
+    setLoading(false);
+  }
+}, [currentMonth]);
 
   useEffect(() => {
-      fetchData();
-    }, [currentMonth]);
+   fetchData();
+  }, [currentMonth,fetchData]);
 
  const handlePrev = () => {
     const prev = subMonths(currentMonth, 1);
@@ -123,11 +130,44 @@ export default function Deposit() {
         [userId]: updatedArray
       });
 
-      await fetchData(); // refresh UI
+
+    const userRef = doc(db, "users", userId);
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      console.error("No user data found for:", userId);
+      return;
+    }
+
+    const userData = userSnap.data();
+    const loanAmount = userData.loanAmount || 0;
+
+      // 🔥 Update details with loan interest
+    const detailsRef = doc(db, "details", '7vmEROFns7pTDS9VBuzR');
+    const detailsSnap = await getDoc(detailsRef);
+
+    if (!detailsSnap.exists()) {
+      console.error("No details found for user:", userId);
+    } else {
+      const detailsData = detailsSnap.data();
+      const availableAmount = parseFloat(detailsData.availableAmount) || 0;
+
+      // Calculate monthly interest (12% annually = 1% monthly)
+      const interest = loanAmount * 0.01;
+      const newAvailableAmount = availableAmount + interest + 3000;
+
+      await updateDoc(detailsRef, {
+        availableAmount: newAvailableAmount,
+        updatedAt: new Date(),
+      });
+    }
+    await fetchData();
     } catch (error) {
+      toast.error('Error updating deposit status.');
       console.error("Error updating deposit status:", error);
     } finally {
       setLoading(false);
+      toast.success('Total Amount updated and interest added successfully!');
     }
   };
 
@@ -182,6 +222,7 @@ export default function Deposit() {
             </button>
           )} */}
         </div>
+        <ToastContainer position="top-right" autoClose={3000} />
          <div className="flex items-center justify-between text-black mb-2">
               <button
                 className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400"
@@ -221,7 +262,7 @@ export default function Deposit() {
               ) : data.length > 0 ? (
                 data.map(({userId, name, status, updatedAt}, index) => (
                   <tr key={index} className="text-black border-t">
-                    <td className="px-4 py-2 text-left">{name}</td>
+                    <td className="px-4 py-2 text-left">{name}</td> 
                     <td className="px-4 py-2 capitalize"> 
                      <StatusLabel status={status}/>
                     </td>

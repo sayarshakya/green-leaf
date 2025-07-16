@@ -1,11 +1,12 @@
 'use client';
 
+import Image from 'next/image';
 import React from 'react';
 
 const Loading: React.FC = () => {
   return (
      <div className="min-h-screen flex items-center justify-center">
-       <img
+       <Image
         src="/cannabis.svg"
         alt="Loading..."
         width= "90"

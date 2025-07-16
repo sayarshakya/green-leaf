@@ -7,13 +7,18 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
 
-  const subject = 'Monthly Deposit Reminder from Green Leaf';
-  const text = `Hello!
+  const currentMonth = new Date().toLocaleString('en-US', { month: 'long', year: 'numeric' });
+  //const logoUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/cannabis.svg`;
 
-    This is your monthly update from Green Leaf.
+  const subject = `Monthly Deposit Reminder - ${currentMonth} from Green Leaf`;
 
-    Stay green and keep growing!,
-    Team Green Leaf`;
+  const html = `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+      <h2 style="color: #2e7d32;">Hello!</h2>
+      <p>This is your monthly update for <strong>${currentMonth}</strong> from Green Leaf.</p>
+      <p>Stay green and keep growing!<br /><em>– Team Green Leaf</em></p>
+    </div>
+  `;
 
   try {
     const snapshot = await db.collection('users').get();
@@ -42,7 +47,7 @@ export async function GET() {
       from: `"Green Leaf" <${process.env.EMAIL_USER}>`,
       bcc: toList.join(','),
       subject,
-      text,
+      html,
     });
    return NextResponse.json({ message: `Email sent to ${toList.length} users.` });
   } catch (error) {

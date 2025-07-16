@@ -32,10 +32,10 @@ useEffect(() => {
   }, []);
 
 const cards = [
-  { title: 'Total Amount', value: data?.availableAmount, bg: 'bg-lime-300', icon: faPiggyBank },
-  { title: 'Loan Amount', value: data?.loanAmount, bg: 'bg-blue-500', icon: faReceipt },
-  { title: 'Loan Count', value: data?.loanCount, bg: 'bg-red-500', icon: faHashtag },
-  { title: 'Updated At', value: data?.updatedAt, bg: 'bg-green-400', icon: faCalendarDay },
+  { title: 'Total Amount', value: data?.availableAmount, bg: 'bg-lime-400', bbg: 'bg-lime-600', icon: faPiggyBank },
+  { title: 'Loan Amount', value: data?.loanAmount, bg: 'bg-blue-400', bbg: 'bg-blue-600', icon: faReceipt },
+  { title: 'Loan Count', value: data?.loanCount, bg: 'bg-red-400', bbg: 'bg-red-600', icon: faHashtag },
+  { title: 'Updated At', value: data?.updatedAt, bg: 'bg-green-400', bbg: 'bg-green-600', icon: faCalendarDay },
 ];
 
  useEffect(() => {
@@ -61,11 +61,12 @@ const cards = [
 
       {/* Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-       {cards.map(({ title, value, bg, icon }, idx) => (
+        {cards.map(({ title, value, bg, bbg, icon }, idx) => (
           <Card
             key={idx}
             className={bg}
             title={title}
+            bbg={bbg}
             description={
               value === undefined
                 ? '...'
