@@ -12,7 +12,7 @@ import DateFormatter from '@/app/components/DateFormatter';
 import { useUser } from '@/app/components/UserContext';
 import { toast, ToastContainer } from 'react-toastify';
 
-const MIN_DATE = new Date(2025, 5); // June 2025 (month is 0-indexed)
+const MIN_DATE = new Date(2025, 6); // June 2025 (month is 0-indexed)
 const TODAY = new Date(); 
 
 interface Row {
