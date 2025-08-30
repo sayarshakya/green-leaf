@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { doc, getDoc, Timestamp, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, setDoc, Timestamp, updateDoc } from 'firebase/firestore';
 import { format, addMonths, subMonths, isBefore, isAfter, isSameMonth } from 'date-fns';
 import { db } from '@/lib/firebase';
 import type { Deposit } from '@/app/data/models';
@@ -27,8 +27,8 @@ export default function Deposit() {
   const [currentMonth, setCurrentMonth] = useState(TODAY);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Row[]>([]);
-  const { userData } = useUser(); // user.role could be 'admin' or 'user'
- 
+  const { userData } = useUser();
+
   const fetchData = useCallback(async () => {
   setLoading(true);
   try {
@@ -172,56 +172,66 @@ export default function Deposit() {
   };
 
 
-  // const getAllUserIds = async (): Promise<string[]> => {
-  //   const usersRef = collection(db, "users");
-  //   const snapshot = await getDocs(usersRef);
+  const getAllUserIds = async (): Promise<string[]> => {
+    const usersRef = collection(db, "users");
+    const snapshot = await getDocs(usersRef);
 
-  //   const userIds: string[] = [];
-  //   snapshot.forEach(doc => {
-  //     userIds.push(doc.id); 
-  //   });
+    const userIds: string[] = [];
+    snapshot.forEach(doc => {
+      userIds.push(doc.id); 
+    });
 
-  //   return userIds;
-  // };
+    return userIds;
+  };
   
-//   const insertDepositsForMonth = async (monthId: string) => {
-//   const userIds = await getAllUserIds(); // fetch all user document IDs
+  const insertDepositsForMonth = async (monthId: string) => {
+    const userIds = await getAllUserIds(); // fetch all user document IDs
 
-//   const docRef = doc(db, "deposits", monthId); // one document per month
-//   const existingDoc = await getDoc(docRef);
-//   const existingData = existingDoc.exists() ? existingDoc.data() : {};
+    const docRef = doc(db, "deposits", monthId); // one document per month
+    const existingDoc = await getDoc(docRef);
+    const existingData = existingDoc.exists() ? existingDoc.data() : {};
 
-//   const newData: { [key: string]: any } = { ...existingData };
+    const newData: { [key: string]: any } = { ...existingData };
 
-//   for (const userId of userIds) {
-//     newData[userId] = ["Pending", monthId, new Date()];
-//   }
+    for (const userId of userIds) {
+      newData[userId] = ["Pending", monthId, new Date()];
+    }
 
-//   await setDoc(docRef, newData);
-// };
+    await setDoc(docRef, newData);
+  };
 
-//  const handleClick = () => {
-//     const now = new Date();
-//     const monthId = format(now, "yyyy-MM");
-//     insertDepositsForMonth(monthId);
-//   };
-
+ const handleClick = () => {
+    const now = new Date();
+    const monthId = format(now, "yyyy-MM");
+    insertDepositsForMonth(monthId);
+  };
 
   return (
     <div className="p-4">
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl md:text-3xl font-bold text-black">Deposit</h1>
-           {/* {userData?.role === "ADMIN" && (
-            <button
-              disabled={loading}
-              onClick={handleClick}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400"
-            >
-              {loading ? "Inserting..." : "Insert Current Month Deposits"}
-            </button>
-          )} */}
+            <h1 className="text-2xl md:text-3xl font-bold text-black">Deposit</h1>
+            {userData?.role === "ADMIN" && (
+              <button
+                 disabled={true}
+                onClick={handleClick}
+                className="hidden sm:block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+              >
+                {loading ? "Inserting..." : "Insert Current Month Deposits"}
+              </button>
+            )}
         </div>
+            {userData?.role === "ADMIN" && (
+              <div className="sm:hidden mt-2">
+                <button
+                   disabled={true}
+                  onClick={handleClick}
+                  className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+                >
+                  {loading ? "Inserting..." : "Insert Current Month Deposits"}
+                </button>
+              </div>
+            )}
         <ToastContainer position="top-right" autoClose={3000} />
          <div className="flex items-center justify-between text-black mb-2">
               <button
@@ -262,7 +272,7 @@ export default function Deposit() {
               ) : data.length > 0 ? (
                 data.map(({userId, name, status, updatedAt}, index) => (
                   <tr key={index} className="text-black border-t">
-                    <td className="px-4 py-2 text-left">{name}</td> 
+                    <td className="px-4 py-2 text-left font-semibold">{name}</td> 
                     <td className="px-4 py-2 capitalize"> 
                      <StatusLabel status={status}/>
                     </td>

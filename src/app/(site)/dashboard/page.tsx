@@ -106,7 +106,7 @@ const cards = [
                   index % 2 === 0 ? 'bg-white' : 'bg-gray-100'
                 } text-black`}
               >
-                <td className="px-4 py-3 border-t text-left">{row.name}</td>
+                <td className="px-4 py-3 border-t text-left font-semibold">{row.name}</td>
                 <td className="px-4 py-3 border-t">
                   <DateFormatter value={row.fromDate} />
                 </td>
