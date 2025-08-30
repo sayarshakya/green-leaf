@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { collection, doc, getDoc, getDocs, setDoc, Timestamp, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, Timestamp, updateDoc } from 'firebase/firestore';
 import { format, addMonths, subMonths, isBefore, isAfter, isSameMonth } from 'date-fns';
 import { db } from '@/lib/firebase';
 import type { Deposit } from '@/app/data/models';
@@ -172,39 +172,39 @@ export default function Deposit() {
   };
 
 
-  const getAllUserIds = async (): Promise<string[]> => {
-    const usersRef = collection(db, "users");
-    const snapshot = await getDocs(usersRef);
+  // const getAllUserIds = async (): Promise<string[]> => {
+  //   const usersRef = collection(db, "users");
+  //   const snapshot = await getDocs(usersRef);
 
-    const userIds: string[] = [];
-    snapshot.forEach(doc => {
-      userIds.push(doc.id); 
-    });
+  //   const userIds: string[] = [];
+  //   snapshot.forEach(doc => {
+  //     userIds.push(doc.id); 
+  //   });
 
-    return userIds;
-  };
+  //   return userIds;
+  // };
   
-  const insertDepositsForMonth = async (monthId: string) => {
-    const userIds = await getAllUserIds(); // fetch all user document IDs
+//   const insertDepositsForMonth = async (monthId: string) => {
+//     const userIds = await getAllUserIds(); // fetch all user document IDs
 
-    const docRef = doc(db, "deposits", monthId); // one document per month
-    const existingDoc = await getDoc(docRef);
-    const existingData = existingDoc.exists() ? existingDoc.data() : {};
+//     const docRef = doc(db, "deposits", monthId); // one document per month
+//     const existingDoc = await getDoc(docRef);
+//     const existingData = existingDoc.exists() ? existingDoc.data() : {};
 
-    const newData: { [key: string]: any } = { ...existingData };
+//     const newData: { [key: string]: any } = { ...existingData };
 
-    for (const userId of userIds) {
-      newData[userId] = ["Pending", monthId, new Date()];
-    }
+//     for (const userId of userIds) {
+//       newData[userId] = ["Pending", monthId, new Date()];
+//     }
 
-    await setDoc(docRef, newData);
-  };
+//     await setDoc(docRef, newData);
+//   };
 
- const handleClick = () => {
-    const now = new Date();
-    const monthId = format(now, "yyyy-MM");
-    insertDepositsForMonth(monthId);
-  };
+//  const handleClick = () => {
+//     const now = new Date();
+//     const monthId = format(now, "yyyy-MM");
+//     insertDepositsForMonth(monthId);
+//   };
 
   return (
     <div className="p-4">
@@ -214,7 +214,7 @@ export default function Deposit() {
             {userData?.role === "ADMIN" && (
               <button
                  disabled={true}
-                onClick={handleClick}
+                //onClick={handleClick}
                 className="hidden sm:block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
               >
                 {loading ? "Inserting..." : "Insert Current Month Deposits"}
@@ -225,7 +225,7 @@ export default function Deposit() {
               <div className="sm:hidden mt-2">
                 <button
                    disabled={true}
-                  onClick={handleClick}
+                  //onClick={handleClick}
                   className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
                 >
                   {loading ? "Inserting..." : "Insert Current Month Deposits"}
