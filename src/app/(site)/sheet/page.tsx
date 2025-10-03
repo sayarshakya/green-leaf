@@ -2,7 +2,7 @@
 export default async function SheetPage() {
   // 1. Fetch spreadsheet metadata (to get tab names)
   const metaRes = await fetch(
-    `https://sheets.googleapis.com/v4/spreadsheets/${process.env.SHEET_ID}?key=${process.env.GOOGLE_API_KEY}`,
+    `https://sheets.googleapis.com/v4/spreadsheets/${process.env.NEXT_PUBLIC_SHEET_ID}?key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`,
     { cache: "no-store" }
   );
 
@@ -13,7 +13,7 @@ export default async function SheetPage() {
   const tabData: Record<string, string[][]> = {};
   for (const tab of sheetTabs) {
     const res = await fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${process.env.SHEET_ID}/values/${encodeURIComponent(
+      `https://sheets.googleapis.com/v4/spreadsheets/${process.env.NEXT_PUBLIC_SHEET_ID}/values/${encodeURIComponent(
         tab
       )}?key=${process.env.GOOGLE_API_KEY}`,
       { cache: "no-store" }
