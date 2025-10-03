@@ -1,11 +1,11 @@
 "use client";
 import { faPiggyBank, faHashtag, faReceipt, faCalendarDay } from '@fortawesome/free-solid-svg-icons';
-import Card from "../../components/Card";
+import Card from "@/app/components/Card";
 import { useEffect, useState } from "react";
 import { collection, doc, getDoc, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Detail, UserData } from "../../data/models";
-import { formatNumber } from "../../utils/formatNumber";
+import { Detail, UserData } from "@/app/data/models";
+import { formatNumber } from "@/app/utils/formatNumber";
 import Loading from '@/app/components/Loading';
 import DateFormatter from '@/app/components/DateFormatter';
 
@@ -17,7 +17,7 @@ export default function Home() {
 
 useEffect(() => {
     const fetchDetails = async () => {
-      const docRef = doc(db, 'details', '7vmEROFns7pTDS9VBuzR'); 
+      const docRef = doc(db, 'details', process.env.NEXT_PUBLIC_DETAIL_ID as string); 
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
@@ -75,7 +75,15 @@ const cards = [
                   : typeof value === 'string'
                     ? value
                     : (value && typeof value.toDate === 'function')
-                      ? value.toDate().toISOString().split('T')[0].replace(/-/g, '/')
+                      ? value.toDate().toLocaleString('en-CA', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: false,
+                      timeZone: 'Asia/Kathmandu'
+                    }).replace(/-/g, '/').replace(',', '')
                       : String(value)
             }
             icon={icon}

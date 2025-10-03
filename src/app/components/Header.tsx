@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useUser } from './UserContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCannabis, faBars, faTimes, faUser, faGauge, faMoneyBillTransfer, faUserTie, faPersonWalkingArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { faCannabis, faBars, faTimes, faUser, faGauge, faMoneyBillTransfer, faUserTie, faPersonWalkingArrowRight, faSheetPlastic } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import Loading from './Loading';
 
@@ -21,6 +21,7 @@ export default function Header() {
   const links = [
   { name: 'Dashboard', href: '/dashboard', icon: faGauge },
   { name: 'Deposit', href: '/deposit', icon: faMoneyBillTransfer },
+   { name: 'Google Sheet', href: '/sheet', icon: faSheetPlastic },
   { name: 'Profile', href: '/profile', icon: faUser },
    ...(role === 'ADMIN' ? [{ name: 'Account', href: '/account', icon : faUserTie }] : []),
 ];

@@ -45,7 +45,7 @@ export default function Deposit() {
     const docData = docSnap.data();
     const entries = Object.entries(docData) as [string, [string, string, Timestamp | Date]][];
 
-    // 🔁 Fetch all user documents in parallel
+    // Fetch all user documents in parallel
     const userPromises = entries.map(async ([userId, value]) => {
       const [status, , rawTimestamp] = value;
 
@@ -68,7 +68,7 @@ export default function Deposit() {
 
     const rows = await Promise.all(userPromises);
 
-    // ✅ Sort by most recently updated
+    // Sort by most recently updated
     rows.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
 
     setData(rows);
@@ -172,22 +172,22 @@ export default function Deposit() {
   };
 
 
-  // const getAllUserIds = async (): Promise<string[]> => {
-  //   const usersRef = collection(db, "users");
-  //   const snapshot = await getDocs(usersRef);
+//   const getAllUserIds = async (): Promise<string[]> => {
+//     const usersRef = collection(db, "users");
+//     const snapshot = await getDocs(usersRef);
 
-  //   const userIds: string[] = [];
-  //   snapshot.forEach(doc => {
-  //     userIds.push(doc.id); 
-  //   });
+//     const userIds: string[] = [];
+//     snapshot.forEach(doc => {
+//       userIds.push(doc.id); 
+//     });
 
-  //   return userIds;
-  // };
+//     return userIds;
+//   };
   
 //   const insertDepositsForMonth = async (monthId: string) => {
-//     const userIds = await getAllUserIds(); // fetch all user document IDs
+//     const userIds = await getAllUserIds(); 
 
-//     const docRef = doc(db, "deposits", monthId); // one document per month
+//     const docRef = doc(db, "deposits", monthId);
 //     const existingDoc = await getDoc(docRef);
 //     const existingData = existingDoc.exists() ? existingDoc.data() : {};
 
@@ -213,7 +213,7 @@ export default function Deposit() {
             <h1 className="text-2xl md:text-3xl font-bold text-black">Deposit</h1>
             {userData?.role === "ADMIN" && (
               <button
-                 disabled={true}
+                disabled={true}
                 //onClick={handleClick}
                 className="hidden sm:block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
               >
@@ -224,7 +224,7 @@ export default function Deposit() {
             {userData?.role === "ADMIN" && (
               <div className="sm:hidden mt-2">
                 <button
-                   disabled={true}
+                  disabled={true}
                   //onClick={handleClick}
                   className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
                 >

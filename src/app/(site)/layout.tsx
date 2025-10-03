@@ -1,12 +1,12 @@
 import '@/app/globals.css';
 import type { Metadata } from 'next';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import Header from '@/app/components/Header';
+import Footer from '@/app/components/Footer';
 
 export const metadata: Metadata = {
   title: 'Green Leaf',
-  description: 'Green Leaf - Your Loan Management System',
+  description: 'Green Leaf - Your Deposit and Loan Management System',
 };
 
 export default function RootLayout({

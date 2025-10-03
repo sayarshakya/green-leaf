@@ -120,7 +120,7 @@ export default function UserManager() {
       <button
         onClick={handleAddRow}
         className={`mb-4 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 disabled:bg-gray-400`}
-        disabled={newRow || editingUserId !== null}
+        disabled={true || newRow || editingUserId !== null}
       >
       <FontAwesomeIcon icon={faPlus} className="w-4 h-4" /> Add User
       </button>
