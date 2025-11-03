@@ -8,6 +8,7 @@ import { Detail, UserData } from "@/app/data/models";
 import { formatNumber } from "@/app/utils/formatNumber";
 import Loading from '@/app/components/Loading';
 import DateFormatter from '@/app/components/DateFormatter';
+import MonthLabel from '@/app/components/MonthLabel';
 
 
 export default function Home() {
@@ -119,9 +120,7 @@ const cards = [
                   <DateFormatter value={row.fromDate} />
                 </td>
                 <td className="px-4 py-3 border-t font-semibold rounded">
-                  <label className="inline-block border border-gray-300 rounded-full px-3 py-1 text-sm text-gray-800 bg-green-400">
-                    <DateFormatter value={row.toDate} />
-                  </label>
+                   <MonthLabel dateValue={row.toDate.toDate()} />
                 </td>
                 <td className="px-4 py-3 border-t">
                   {formatNumber(row.loanAmount)} 

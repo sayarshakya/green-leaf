@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { doc, getDoc, Timestamp, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, setDoc, Timestamp, updateDoc } from 'firebase/firestore';
 import { format, addMonths, subMonths, isBefore, isAfter, isSameMonth } from 'date-fns';
 import { db } from '@/lib/firebase';
 import type { Deposit } from '@/app/data/models';
@@ -28,6 +28,7 @@ export default function Deposit() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Row[]>([]);
   const { userData } = useUser();
+  const [exists, setExists] = useState(false);
 
   const fetchData = useCallback(async () => {
   setLoading(true);
@@ -39,7 +40,10 @@ export default function Deposit() {
     if (!docSnap.exists()) {
       setData([]);
       setLoading(false);
+      setExists(false);
       return;
+    } else {
+      setExists(false);
     }
 
     const docData = docSnap.data();
@@ -130,7 +134,6 @@ export default function Deposit() {
         [userId]: updatedArray
       });
 
-
     const userRef = doc(db, "users", userId);
     const userSnap = await getDoc(userRef);
 
@@ -143,7 +146,7 @@ export default function Deposit() {
     const loanAmount = userData.loanAmount || 0;
 
       // 🔥 Update details with loan interest
-    const detailsRef = doc(db, "details", '7vmEROFns7pTDS9VBuzR');
+    const detailsRef = doc(db, "details", process.env.NEXT_PUBLIC_DETAIL_ID as string);
     const detailsSnap = await getDoc(detailsRef);
 
     if (!detailsSnap.exists()) {
@@ -172,39 +175,39 @@ export default function Deposit() {
   };
 
 
-//   const getAllUserIds = async (): Promise<string[]> => {
-//     const usersRef = collection(db, "users");
-//     const snapshot = await getDocs(usersRef);
+  const getAllUserIds = async (): Promise<string[]> => {
+    const usersRef = collection(db, "users");
+    const snapshot = await getDocs(usersRef);
 
-//     const userIds: string[] = [];
-//     snapshot.forEach(doc => {
-//       userIds.push(doc.id); 
-//     });
+    const userIds: string[] = [];
+    snapshot.forEach(doc => {
+      userIds.push(doc.id); 
+    });
 
-//     return userIds;
-//   };
+    return userIds;
+  };
   
-//   const insertDepositsForMonth = async (monthId: string) => {
-//     const userIds = await getAllUserIds(); 
+  const insertDepositsForMonth = async (monthId: string) => {
+    const userIds = await getAllUserIds(); 
 
-//     const docRef = doc(db, "deposits", monthId);
-//     const existingDoc = await getDoc(docRef);
-//     const existingData = existingDoc.exists() ? existingDoc.data() : {};
+    const docRef = doc(db, "deposits", monthId);
+    const existingDoc = await getDoc(docRef);
+    const existingData = existingDoc.exists() ? existingDoc.data() : {};
 
-//     const newData: { [key: string]: any } = { ...existingData };
+    const newData: Record<string, unknown> = { ...existingData };
 
-//     for (const userId of userIds) {
-//       newData[userId] = ["Pending", monthId, new Date()];
-//     }
+    for (const userId of userIds) {
+      newData[userId] = ["Pending", monthId, new Date()];
+    }
 
-//     await setDoc(docRef, newData);
-//   };
+    await setDoc(docRef, newData);
+  };
 
-//  const handleClick = () => {
-//     const now = new Date();
-//     const monthId = format(now, "yyyy-MM");
-//     insertDepositsForMonth(monthId);
-//   };
+ const handleClick = () => {
+    const now = new Date();
+    const monthId = format(now, "yyyy-MM");
+    insertDepositsForMonth(monthId);
+  };
 
   return (
     <div className="p-4">
@@ -213,9 +216,9 @@ export default function Deposit() {
             <h1 className="text-2xl md:text-3xl font-bold text-black">Deposit</h1>
             {userData?.role === "ADMIN" && (
               <button
-                disabled={true}
-                //onClick={handleClick}
-                className="hidden sm:block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+                 disabled={exists || loading}
+                onClick={handleClick}
+                className="hidden sm:block px-4 py-2 bg-sky-700 text-white rounded-lg hover:bg-sky-900 disabled:bg-gray-400"
               >
                 {loading ? "Inserting..." : "Insert Current Month Deposits"}
               </button>
@@ -224,9 +227,9 @@ export default function Deposit() {
             {userData?.role === "ADMIN" && (
               <div className="sm:hidden mt-2">
                 <button
-                  disabled={true}
-                  //onClick={handleClick}
-                  className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+                  disabled={exists || loading}
+                  onClick={handleClick}
+                  className="w-full px-4 py-2 bg-sky-700 text-white rounded-lg hover:bg-sky-900 disabled:bg-gray-400"
                 >
                   {loading ? "Inserting..." : "Insert Current Month Deposits"}
                 </button>
