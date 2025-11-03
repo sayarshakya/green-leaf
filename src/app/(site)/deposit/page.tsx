@@ -43,7 +43,7 @@ export default function Deposit() {
       setExists(false);
       return;
     } else {
-      setExists(false);
+      setExists(true);
     }
 
     const docData = docSnap.data();
