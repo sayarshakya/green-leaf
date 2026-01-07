@@ -15,7 +15,6 @@ export default function Home() {
   const [data, setData] = useState<Detail | null>(null);
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState<UserData[]>([]);
-  const [sortedUsers, setSortedUsers] = useState<UserData[]>([]);
   const [isDesc, setIsDesc] = useState(true);
 
 useEffect(() => {
@@ -50,17 +49,16 @@ const cards = [
         ...doc.data(),
       })) as UserData[];
       setUsers(userList);
-      setSortedUsers(userList);
     });
     return () => unsub();
   }, []);
 
   const handleCountSort = () => {
-    const sorted = [...sortedUsers].sort((a, b) =>
+    const sorted = [...users].sort((a, b) =>
       isDesc ? b.loanCount - a.loanCount : a.loanCount - b.loanCount
     );
 
-    setSortedUsers(sorted);
+    setUsers(sorted);
     setIsDesc(!isDesc);
   };
 
@@ -125,7 +123,7 @@ const cards = [
             </tr>
           </thead>
           <tbody>
-            {sortedUsers.map((row, index) => (
+            {users.map((row, index) => (
               <tr
                 key={index}
                 className={`${
