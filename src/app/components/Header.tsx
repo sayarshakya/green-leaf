@@ -4,11 +4,11 @@ import { auth } from '@/lib/firebase';
 import { signOut } from 'firebase/auth';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useUser } from './UserContext';
+import { useUser } from '@/app/components/UserContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCannabis, faBars, faTimes, faUser, faGauge, faMoneyBillTransfer, faUserTie, faPersonWalkingArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
-import Loading from './Loading';
+import Loading from '@/app/components/Loading';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

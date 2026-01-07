@@ -15,6 +15,8 @@ export default function Home() {
   const [data, setData] = useState<Detail | null>(null);
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState<UserData[]>([]);
+  const [sortedUsers, setSortedUsers] = useState<UserData[]>([]);
+  const [isDesc, setIsDesc] = useState(true);
 
 useEffect(() => {
     const fetchDetails = async () => {
@@ -48,9 +50,19 @@ const cards = [
         ...doc.data(),
       })) as UserData[];
       setUsers(userList);
+      setSortedUsers(userList);
     });
     return () => unsub();
   }, []);
+
+  const handleCountSort = () => {
+    const sorted = [...sortedUsers].sort((a, b) =>
+      isDesc ? b.loanCount - a.loanCount : a.loanCount - b.loanCount
+    );
+
+    setSortedUsers(sorted);
+    setIsDesc(!isDesc);
+  };
 
   if (loading) 
   return <Loading />;
@@ -104,11 +116,16 @@ const cards = [
               <th className="px-4 py-3">From Date</th>
               <th className="px-4 py-3">To Date</th>
               <th className="px-4 py-3">Amount</th>
-              <th className="px-4 py-3">Count</th>
+              <th
+                className="px-4 py-3 cursor-pointer select-none hover:bg-gray-700"
+                onClick={handleCountSort}
+              >
+                Count {isDesc ? '▼' : '▲'}
+              </th>
             </tr>
           </thead>
           <tbody>
-            {users.map((row, index) => (
+            {sortedUsers.map((row, index) => (
               <tr
                 key={index}
                 className={`${
