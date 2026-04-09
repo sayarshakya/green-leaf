@@ -3,6 +3,7 @@ import '@/app/globals.css';
 import { robotoMono } from '../lib/fonts';
 import type { Metadata } from 'next';
 import { UserProvider } from './components/UserContext';
+import { Analytics } from '@vercel/analytics/next';
 
 export const metadata: Metadata = {
   title: 'Green Leaf',
@@ -20,6 +21,7 @@ export default function RootLayout({
       <main className="flex-1 pt-4 pb-24 px-4 sm:px-6 md:px-8 min-h-screen overflow-auto w-full bg-white">
         <UserProvider>{children}</UserProvider>
       </main>
+      <Analytics />
     </body>
   </html>
   );
