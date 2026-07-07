@@ -11,6 +11,7 @@ import { faSquareCaretLeft, faSquareCaretRight } from '@fortawesome/free-solid-s
 import DateFormatter from '@/app/components/DateFormatter';
 import { useUser } from '@/app/components/UserContext';
 import { toast, ToastContainer } from 'react-toastify';
+import Loading from '@/app/components/Loading';
 
 const MIN_DATE = new Date(2025, 6); // June 2025 (month is 0-indexed)
 const TODAY = new Date(); 
@@ -145,7 +146,7 @@ export default function Deposit() {
     const userData = userSnap.data();
     const loanAmount = userData.loanAmount || 0;
 
-      // 🔥 Update details with loan interest
+    // 🔥 Update details with loan interest
     const detailsRef = doc(db, "details", process.env.NEXT_PUBLIC_DETAIL_ID as string);
     const detailsSnap = await getDoc(detailsRef);
 
@@ -203,11 +204,24 @@ export default function Deposit() {
     await setDoc(docRef, newData);
   };
 
- const handleClick = () => {
+  const delay = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
+
+ const handleClick = async () => {
+  try {
+    setLoading(true);
+
     const now = new Date();
     const monthId = format(now, "yyyy-MM");
-    insertDepositsForMonth(monthId);
-  };
+    await insertDepositsForMonth(monthId);
+  } catch (error) {
+    toast.error('Error inserting monthly deposits.');
+    console.error(error);
+  } finally {
+    setLoading(false);
+    toast.success('Monthly deposits inserted successfully!');
+  }
+};
 
   return (
     <div className="p-4">
@@ -216,7 +230,7 @@ export default function Deposit() {
             <h1 className="text-2xl md:text-3xl font-bold text-black">Deposit</h1>
             {userData?.role === "ADMIN" && (
               <button
-                 disabled={exists || loading}
+               disabled={exists || loading}
                 onClick={handleClick}
                 className="hidden sm:block px-4 py-2 bg-sky-700 text-white rounded-lg hover:bg-sky-900 disabled:bg-gray-400"
               >
@@ -235,8 +249,16 @@ export default function Deposit() {
                 </button>
               </div>
             )}
+
+          {loading && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20">
+              <div className="flex flex-col items-center gap-4">
+                  <Loading />
+              </div>
+            </div>
+          )}
         <ToastContainer position="top-right" autoClose={3000} />
-         <div className="flex items-center justify-between text-black mb-2">
+        <div className="flex items-center justify-between text-black mb-2">
               <button
                 className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400"
                 onClick={handlePrev}
@@ -254,7 +276,7 @@ export default function Deposit() {
               >
                 <FontAwesomeIcon icon={faSquareCaretRight} className="w-4 h-4" />
               </button>
-            </div>
+        </div>
         <div className="relative w-full overflow-x-auto">
           <table className="w-full text-center bg-white border border-gray-200 rounded-lg shadow text-sm md:text-base">
             <thead className="bg-gray-800 text-white">
