@@ -1,4 +1,5 @@
 import '@/app/utils/fontawesome'
+import '@/app/globals.css';
 import { robotoMono } from '../lib/fonts';
 import type { Metadata } from 'next';
 import { UserProvider } from './components/UserContext';
